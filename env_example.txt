@@ -1,0 +1,8 @@
+# Claude API 키 설정
+# https://console.anthropic.com/에서 API 키를 발급받으세요
+CLAUDE_API_KEY=your_claude_api_key_here
+
+# 사용법:
+# 1. 이 파일을 .env로 복사하세요
+# 2. your_claude_api_key_here를 실제 API 키로 교체하세요
+# 3. .env 파일은 절대 GitHub에 커밋하지 마세요 
