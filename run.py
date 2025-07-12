@@ -50,7 +50,7 @@ def main():
     
     # Streamlit 앱 실행
     try:
-        subprocess.run([sys.executable, "-m", "streamlit", "run", "main.py"])
+        subprocess.run(["python3", "-m", "streamlit", "run", "main.py"])
     except KeyboardInterrupt:
         print("\n\n👋 앱이 종료되었습니다.")
     except Exception as e:
