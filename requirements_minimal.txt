@@ -1,0 +1,5 @@
+# 최소한의 패키지만 포함한 안전한 버전
+streamlit
+requests
+beautifulsoup4
+python-dotenv 
