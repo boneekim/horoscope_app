@@ -113,8 +113,7 @@ def main():
         
         ### 🌟 지원 사이트
         - **마리끌레어 코리아**: 상세한 월별 운세 정보
-        - **엘르 코리아**: 패션과 라이프스타일을 중심으로 한 운세
-        - **싱글즈 코리아**: 연애와 인간관계 중심의 운세
+        - **Claude AI 종합 요약**: 마리끌레어 운세와 AI가 생성한 추가 운세를 종합한 완성된 운세
         """)
 
 def show_horoscope_results():
@@ -127,76 +126,46 @@ def show_horoscope_results():
     with st.spinner("운세 정보를 가져오는 중입니다..."):
         scraper = HoroscopeScraper()
         
-        # 각 사이트에서 운세 가져오기
-        col1, col2, col3 = st.columns(3)
-        
+        # 마리끌레어에서만 운세 가져오기
         horoscope_data = []
         
-        with col1:
-            st.markdown('<div class="site-section">', unsafe_allow_html=True)
-            st.markdown('<div class="site-title">🌸 마리끌레어 코리아</div>', unsafe_allow_html=True)
-            try:
-                marie_result = scraper.get_marie_claire_horoscope(date, zodiac)
-                if marie_result:
-                    st.write(marie_result)
-                    horoscope_data.append(("마리끌레어 코리아", marie_result))
-                else:
-                    st.error("운세 정보를 가져올 수 없습니다.")
-            except Exception as e:
-                st.error(f"오류가 발생했습니다: {str(e)}")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown('<div class="site-section">', unsafe_allow_html=True)
-            st.markdown('<div class="site-title">💎 엘르 코리아</div>', unsafe_allow_html=True)
-            try:
-                elle_result = scraper.get_elle_horoscope(date, zodiac)
-                if elle_result:
-                    st.write(elle_result)
-                    horoscope_data.append(("엘르 코리아", elle_result))
-                else:
-                    st.error("운세 정보를 가져올 수 없습니다.")
-            except Exception as e:
-                st.error(f"오류가 발생했습니다: {str(e)}")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col3:
-            st.markdown('<div class="site-section">', unsafe_allow_html=True)
-            st.markdown('<div class="site-title">💕 싱글즈 코리아</div>', unsafe_allow_html=True)
-            try:
-                singles_result = scraper.get_singles_horoscope(date, zodiac)
-                if singles_result:
-                    st.write(singles_result)
-                    horoscope_data.append(("싱글즈 코리아", singles_result))
-                else:
-                    st.error("운세 정보를 가져올 수 없습니다.")
-            except Exception as e:
-                st.error(f"오류가 발생했습니다: {str(e)}")
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="site-section">', unsafe_allow_html=True)
+        st.markdown('<div class="site-title">🌸 마리끌레어 코리아</div>', unsafe_allow_html=True)
+        try:
+            marie_result = scraper.get_marie_claire_horoscope(date, zodiac)
+            if marie_result:
+                st.write(marie_result)
+                horoscope_data.append(("마리끌레어 코리아", marie_result))
+            else:
+                st.error("운세 정보를 가져올 수 없습니다.")
+        except Exception as e:
+            st.error(f"오류가 발생했습니다: {str(e)}")
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Claude API를 통한 종합 요약
     if horoscope_data:
         st.markdown('<div class="summary-section">', unsafe_allow_html=True)
         st.markdown('<div class="summary-title">🤖 AI 종합 요약</div>', unsafe_allow_html=True)
         
-        with st.spinner("Claude AI가 종합 요약을 생성하는 중입니다..."):
+        with st.spinner("Claude AI가 마리끌레어 운세와 추가 운세를 종합하여 완성된 운세를 생성하는 중입니다..."):
             claude_api = ClaudeAPI()
             try:
-                summary = claude_api.get_summary(horoscope_data, zodiac, date)
+                # 마리끌레어 데이터와 AI 추가 운세를 종합
+                summary = claude_api.get_comprehensive_summary(horoscope_data, zodiac, date)
                 if summary and "API 키가 설정되지 않았습니다" not in summary:
                     st.write(summary)
                 else:
                     # Claude API가 없을 때 대체 요약 사용
                     st.warning("Claude API를 사용할 수 없습니다. 기본 요약을 제공합니다.")
-                    from claude_api import create_simple_summary
-                    simple_summary = create_simple_summary(horoscope_data, zodiac, date)
+                    from claude_api import create_comprehensive_summary
+                    simple_summary = create_comprehensive_summary(horoscope_data, zodiac, date)
                     st.write(simple_summary)
             except Exception as e:
                 st.error(f"요약 생성 중 오류가 발생했습니다: {str(e)}")
                 # 오류 시에도 기본 요약 제공
                 try:
-                    from claude_api import create_simple_summary
-                    simple_summary = create_simple_summary(horoscope_data, zodiac, date)
+                    from claude_api import create_comprehensive_summary
+                    simple_summary = create_comprehensive_summary(horoscope_data, zodiac, date)
                     st.write(simple_summary)
                 except Exception as e2:
                     st.error(f"기본 요약 생성도 실패했습니다: {str(e2)}")
